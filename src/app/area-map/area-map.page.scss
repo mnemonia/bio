@@ -1,0 +1,22 @@
+:host {
+  .map-control-container {
+    position: absolute;
+    z-index: 10;
+    left: 85vw;
+  }
+  .area-name-input {
+    background-color: var(--ion-color-userinput);
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  .area-value {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  .area-anlegung-input {
+    background-color: var(--ion-color-userinput);
+  }
+  .map-control-button {
+
+  }
+}
