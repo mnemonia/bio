@@ -7,9 +7,12 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Meine Flächen</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list>
+    <ion-item *ngFor="let d of data" detail="true" (click)="openPage(d)">
+      <ion-avatar>
+        <img [src]="'data:image/png;base64,' + d.base64_jpeg_image">
+      </ion-avatar>
+      <ion-label>{{d.area_name}}<p>{{d.address_canonical}}</p></ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

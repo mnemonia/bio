@@ -9,7 +9,11 @@ const routes: Routes = [
   {
     path: 'area-map',
     loadChildren: () => import('./area-map/area-map.module').then( m => m.AreaMapPageModule)
+  },  {
+    path: 'history-data',
+    loadChildren: () => import('./history-data/history-data.module').then( m => m.HistoryDataPageModule)
   }
+
 ];
 @NgModule({
   imports: [

@@ -83,7 +83,7 @@
                  placeholder="Adresse eingeben oder Karte benutzen"
                  (ionChange)="findLocation($event)"
                  debounce="750"
-                 [value]="searchQuery"></ion-input>
+                 [value]="currentData.address_canonical"></ion-input>
     </ion-item>
     <div class="search_container">
       <div class="search_results">
@@ -106,11 +106,11 @@
     </div>
     <ion-item>
       <ion-label position="stacked">Name der Fläche</ion-label>
-      <ion-input class="area-name-input" name="areaName" id="areaName" [(ngModel)]="areaName"></ion-input>
+      <ion-input class="area-name-input" name="areaName" id="areaName" [(ngModel)]="currentData.area_name"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="stacked">Anlegung</ion-label>
-      <ion-select multiple="true" class="area-anlegung-input">
+      <ion-select multiple="true" class="area-anlegung-input" (ionChange)="changeAnlegung($event)" [(ngModel)]="currentData.anlegungen">
         <ion-select-option>Hecken, Ufer- oder Feldgehölz</ion-select-option>
         <ion-select-option>Wassergraben, Teich und Tümpel</ion-select-option>
         <ion-select-option>Ruderalfläche, Stein- oder Asthaufen</ion-select-option>
@@ -120,7 +120,7 @@
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label>Fläche<p *ngIf="areaScaled === 0">In Karte die Eckpunkte antippen</p></ion-label><ion-text>{{areaScaled}} m²</ion-text>
+      <ion-label>Fläche<p *ngIf="currentData.area_in_m2 === 0">In Karte die Eckpunkte antippen</p></ion-label><ion-text>{{currentData.area_in_m2}} m²</ion-text>
     </ion-item>
   </ion-list>
   <ion-grid *ngIf="isTakePicture">
@@ -131,14 +131,7 @@
               [imageQuality]="1"
               mirrorImage="never"
               (cameraSwitched)="cameraWasSwitched($event)"
-              (initError)="handleInitError($event)"
-      >
-        <!-- ion-toolbar class="webcam">
-          <ion-buttons slot="end">
-            <ion-button class="actionBtn" (click)="triggerSnapshot();"><ion-icon name="radio-button-on-outline"></ion-icon></ion-button>
-            <ion-button class="actionBtn" (click)="toggleWebcam();"><ion-icon name="sync-outline"></ion-icon></ion-button>
-          </ion-buttons>
-        </ion-toolbar -->
+              (initError)="handleInitError($event)">
       </webcam>
     </ion-col></ion-row>
     <ion-row><ion-col>
@@ -154,13 +147,29 @@
   </ion-grid>
   <ion-slides>
     <ion-slide>
-      <div class="snapshot" *ngIf="webcamImage">
-        <img [src]="webcamImage.imageAsDataUrl"/>
+      <div class="snapshot" *ngIf="currentData.base64_jpeg_image">
+        <img [src]="'data:image/png;base64,' + currentData.base64_jpeg_image"/>
       </div>
     </ion-slide>
   </ion-slides>
   <ion-list>
     <ion-button color="secondary" expand="full" (click)="takePicture($event)"><ion-icon name="camera-outline"></ion-icon></ion-button>
-    <ion-button expand="full">Mission B anmelden</ion-button>
+  </ion-list>
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Vorname</ion-label>
+      <ion-input class="area-name-input" type="text" name="surname" id="surname" [(ngModel)]="currentData.surname"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Nachname</ion-label>
+      <ion-input class="area-name-input" type="text" name="lastname" id="lastname" [(ngModel)]="currentData.lastname"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Email (für Rückmeldung von Wettbewerb Glarus)</ion-label>
+      <ion-input class="area-name-input" type="email" name="email" id="email" [(ngModel)]="currentData.email"></ion-input>
+    </ion-item>
+    <ion-button *ngIf="!isSendingData" expand="full" (click)="sendData($event)">Daten übermitteln (an MissionB und Gde Glarus)</ion-button>
+    <ion-button *ngIf="isSendingData" disabled="true" expand="full"><ion-spinner></ion-spinner></ion-button>
+
   </ion-list>
 </ion-content>

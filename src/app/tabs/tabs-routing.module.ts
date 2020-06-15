@@ -12,7 +12,7 @@ const routes: Routes = [
         loadChildren: () => import('../area-map/area-map.module').then(m => m.AreaMapPageModule)
       },
       {
-        path: 'tab2',
+        path: 'my-areas',
         loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
       },
       {

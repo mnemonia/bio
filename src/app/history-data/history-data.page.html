@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/my-areas"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{data.area_name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label>Adresse<p>{{data.address_canonical}}</p></ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Fläche</ion-label>
+      <ion-text>{{data.area_in_m2}} m²</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label>Anlegungen</ion-label>
+      <ul>
+        <li *ngFor="let anlegung of data.anlegungen">{{anlegung}}</li>
+      </ul>
+    </ion-item>
+    <ion-item>
+      <ion-label>Bilder</ion-label>
+    </ion-item>
+  </ion-list>
+<ion-list>
+  <ion-button disabled="true" expand="full" (click)="deleteData()">Löschen</ion-button>
+</ion-list>
+</ion-content>

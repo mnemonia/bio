@@ -12,6 +12,9 @@ import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {WebcamModule} from 'ngx-webcam';
 import {GeoApiService} from './services/geoapi/geo-api.service';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {DataService} from './services/data/data.service';
+import {BioApiService} from './services/bioapi/bio-api.service';
+import {SettingsService} from './services/settings/settings.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +25,9 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
     SplashScreen,
     HttpClient,
     GeoApiService,
+      DataService,
+      BioApiService,
+      SettingsService,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: LocationStrategy, useClass: HashLocationStrategy}
 
