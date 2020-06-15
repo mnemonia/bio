@@ -2,13 +2,114 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header>
-    <ion-searchbar placeholder="Adresse eingeben"></ion-searchbar>
-    <ion-toolbar>
-      <ion-input clear-input="true" class="area-name-input" slot="start" name="areaName" id="areaName" [(ngModel)]="areaName"></ion-input>
-      <ion-text class="area-value">: {{areaScaled}} m2</ion-text>
-    </ion-toolbar>
-    <ion-toolbar>
+    <!-- webcam class="webcam" (initError)="handleInitError($event)"></webcam -->
+
+  <!-- button class="actionBtn" (click)="showNextWebcam(true);" [disabled]="!multipleWebcamsAvailable">Next Webcam</button>
+  <input id="cameraSwitchCheckbox" type="checkbox" [(ngModel)]="allowCameraSwitch"><label for="cameraSwitchCheckbox">Allow Camera Switch</label>
+  <br/>
+  DeviceId: <input id="deviceId" type="text" [(ngModel)]="deviceId" style="width: 500px">
+  <button (click)="showNextWebcam(deviceId);">Activate</button -->
+
+    <ion-grid  *ngIf="!isTakePicture" class="map-control-container">
+      <ion-row>
+        <ion-col size="1"  class="ion-no-margin ion-no-padding">
+          <ion-grid class="ion-no-margin ion-no-padding">
+            <ion-row>
+              <ion-col class="ion-no-margin ion-no-padding">
+                <div #mapZoomPlusX name="mapZoomPlusX" id="mapZoomPlusX" >
+                  <ion-button size="small" title="Plus" class="map-control-button" (click)="zoom('plus')"><ion-icon name="add-outline"></ion-icon></ion-button>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row  class="map-control-toolbar">
+              <ion-col class="ion-no-margin ion-no-padding">
+                <div #mapZoomMinusX name="mapZoomMinusX" id="mapZoomMinusX">
+                  <ion-button size="small" title="Minus" class="map-control-button" (click)="zoom('minus')" (mousedown)="zoom('minus')"><ion-icon name="remove-outline"></ion-icon></ion-button>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row  class="map-control-toolbar">
+              <ion-col class="ion-no-margin ion-no-padding">
+                &nbsp;
+              </ion-col>
+            </ion-row>
+            <ion-row  class="map-control-toolbar">
+              <ion-col class="ion-no-margin ion-no-padding">
+                &nbsp;
+              </ion-col>
+            </ion-row>
+            <!-- ion-row>
+              <ion-col class="ion-no-margin ion-no-padding">
+                <div #geolocationControlX name="geolocationControlX" id="geolocationControlX">
+                  <ion-button size="small" title="Locate me" class="map-control-button" (click)="locateMe($event)"><ion-icon name="locate-outline"></ion-icon></ion-button>
+                </div>
+              </ion-col>
+            </ion-row -->
+            <ion-row  class="map-control-toolbar">
+              <ion-col class="ion-no-margin ion-no-padding">
+                &nbsp;
+              </ion-col>
+            </ion-row>
+            <ion-row  class="map-control-toolbar">
+              <ion-col class="ion-no-margin ion-no-padding">
+                &nbsp;
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-no-margin ion-no-padding">
+                <div #clearPoints01 name="clearPoints01" id="clearPoints01">
+                  <ion-button size="small" color="danger" title="Locate me" class="map-control-button" (click)="clearPoints($event)"><ion-icon name="close-circle-outline"></ion-icon></ion-button>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-no-margin ion-no-padding">
+                <div #editArea01 name="editArea01" id="editArea01">
+                  <ion-button size="small" color="secondary" title="Fläche editieren" class="map-control-button" (click)="editArea($event)"><ion-icon name="pin-outline"></ion-icon>
+                  </ion-button>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  <app-swiss-map #swissymappy (onMapEvent)="clickInMap($event)"></app-swiss-map>
+
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Adresse</ion-label>
+      <ion-input class="area-name-input"
+                 placeholder="Adresse eingeben oder Karte benutzen"
+                 (ionChange)="findLocation($event)"
+                 debounce="750"
+                 [value]="searchQuery"></ion-input>
+    </ion-item>
+    <div class="search_container">
+      <div class="search_results">
+        <ion-list class="transparent_layer">
+          <ion-item
+                  class="search_result"
+                  color="light"
+                  slot="end"
+                  expand="block"
+                  *ngFor="let loc of locations"
+                  (click)="jumpToLocation(loc.result)">
+            <ion-icon *ngIf="loc.is_search_history" name="time-outline"></ion-icon>&nbsp;
+            <div
+                    [innerHTML]="loc.result.attrs.label"
+                    class="search_result_item"
+            ></div
+            ></ion-item>
+        </ion-list>
+      </div>
+    </div>
+    <ion-item>
+      <ion-label position="stacked">Name der Fläche</ion-label>
+      <ion-input class="area-name-input" name="areaName" id="areaName" [(ngModel)]="areaName"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Anlegung</ion-label>
       <ion-select multiple="true" class="area-anlegung-input">
         <ion-select-option>Hecken, Ufer- oder Feldgehölz</ion-select-option>
         <ion-select-option>Wassergraben, Teich und Tümpel</ion-select-option>
@@ -17,74 +118,49 @@
         <ion-select-option>Buntbrache</ion-select-option>
         <ion-select-option>Saum auf Ackerfläche mit regionalem Saatgut</ion-select-option>
       </ion-select>
-    </ion-toolbar>
-    <ion-toolbar>
-      <ion-button expand="full">Mission B anmelden</ion-button>
-    </ion-toolbar>
-  </ion-header>
-  <ion-grid class="map-control-container">
-    <ion-row>
-      <ion-col size="1"  class="ion-no-margin ion-no-padding">
-        <ion-grid class="ion-no-margin ion-no-padding">
-          <ion-row>
-            <ion-col class="ion-no-margin ion-no-padding">
-              <div #mapZoomPlusX name="mapZoomPlusX" id="mapZoomPlusX" >
-                <ion-button size="small" title="Plus" class="map-control-button" (click)="zoom('plus')"><ion-icon name="add-outline"></ion-icon></ion-button>
-              </div>
-            </ion-col>
-          </ion-row>
-          <ion-row  class="map-control-toolbar">
-            <ion-col class="ion-no-margin ion-no-padding">
-              <div #mapZoomMinusX name="mapZoomMinusX" id="mapZoomMinusX">
-                <ion-button size="small" title="Minus" class="map-control-button" (click)="zoom('minus')" (mousedown)="zoom('minus')"><ion-icon name="remove-outline"></ion-icon></ion-button>
-              </div>
-            </ion-col>
-          </ion-row>
-          <ion-row  class="map-control-toolbar">
-            <ion-col class="ion-no-margin ion-no-padding">
-              &nbsp;
-            </ion-col>
-          </ion-row>
-          <ion-row  class="map-control-toolbar">
-            <ion-col class="ion-no-margin ion-no-padding">
-              &nbsp;
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="ion-no-margin ion-no-padding">
-              <div #geolocationControlX name="geolocationControlX" id="geolocationControlX">
-                <ion-button size="small" title="Locate me" class="map-control-button" (click)="locateMe($event)"><ion-icon name="locate-outline"></ion-icon></ion-button>
-              </div>
-            </ion-col>
-          </ion-row>
-          <ion-row  class="map-control-toolbar">
-            <ion-col class="ion-no-margin ion-no-padding">
-              &nbsp;
-            </ion-col>
-          </ion-row>
-          <ion-row  class="map-control-toolbar">
-            <ion-col class="ion-no-margin ion-no-padding">
-              &nbsp;
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="ion-no-margin ion-no-padding">
-              <div #clearPoints01 name="clearPoints01" id="clearPoints01">
-                <ion-button size="small" title="Locate me" class="map-control-button" (click)="clearPoints($event)"><ion-icon name="close-circle-outline"></ion-icon></ion-button>
-              </div>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="ion-no-margin ion-no-padding">
-              <div #editArea01 name="editArea01" id="editArea01">
-                <ion-button size="small" color="secondary" title="Fläche editieren" class="map-control-button" (click)="editArea($event)"><ion-icon name="create-outline"></ion-icon>
-                </ion-button>
-              </div>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-col>
-    </ion-row>
+    </ion-item>
+    <ion-item>
+      <ion-label>Fläche<p *ngIf="areaScaled === 0">In Karte die Eckpunkte antippen</p></ion-label><ion-text>{{areaScaled}} m²</ion-text>
+    </ion-item>
+  </ion-list>
+  <ion-grid *ngIf="isTakePicture">
+    <ion-row><ion-col>
+      <webcam [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+              [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+              [videoOptions]="videoOptions"
+              [imageQuality]="1"
+              mirrorImage="never"
+              (cameraSwitched)="cameraWasSwitched($event)"
+              (initError)="handleInitError($event)"
+      >
+        <!-- ion-toolbar class="webcam">
+          <ion-buttons slot="end">
+            <ion-button class="actionBtn" (click)="triggerSnapshot();"><ion-icon name="radio-button-on-outline"></ion-icon></ion-button>
+            <ion-button class="actionBtn" (click)="toggleWebcam();"><ion-icon name="sync-outline"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-toolbar -->
+      </webcam>
+    </ion-col></ion-row>
+    <ion-row><ion-col>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button class="actionBtn" color="danger" (click)="toggleWebcam();"><ion-icon name="remove-circle-outline"></ion-icon></ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button class="actionBtn" (click)="triggerSnapshot();"><ion-icon name="scan-circle-outline"></ion-icon></ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-col></ion-row>
   </ion-grid>
-<app-swiss-map #swissymappy (onMapEvent)="clickInMap($event)"></app-swiss-map>
+  <ion-slides>
+    <ion-slide>
+      <div class="snapshot" *ngIf="webcamImage">
+        <img [src]="webcamImage.imageAsDataUrl"/>
+      </div>
+    </ion-slide>
+  </ion-slides>
+  <ion-list>
+    <ion-button color="secondary" expand="full" (click)="takePicture($event)"><ion-icon name="camera-outline"></ion-icon></ion-button>
+    <ion-button expand="full">Mission B anmelden</ion-button>
+  </ion-list>
 </ion-content>

@@ -8,6 +8,7 @@ import { AreaMapPageRoutingModule } from './area-map-routing.module';
 
 import { AreaMapPage } from './area-map.page';
 import {CompsModule} from '../comps/comps.module';
+import {WebcamModule} from 'ngx-webcam';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import {CompsModule} from '../comps/comps.module';
     FormsModule,
     IonicModule,
       CompsModule,
+      WebcamModule,
     AreaMapPageRoutingModule
   ],
   declarations: [AreaMapPage]

@@ -9,14 +9,19 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {WebcamModule} from 'ngx-webcam';
+import {GeoApiService} from './services/geoapi/geo-api.service';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [BrowserModule, WebcamModule, HttpClientModule, IonicModule.forRoot(), AppRoutingModule],
   providers: [
     StatusBar,
     SplashScreen,
+    HttpClient,
+    GeoApiService,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: LocationStrategy, useClass: HashLocationStrategy}
 

@@ -1,5 +1,8 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {SwissMapComponent} from '../comps/swiss-map/swiss-map.component';
+import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
+import {Observable, Subject} from 'rxjs';
+import {GeoApiService} from '../services/geoapi/geo-api.service';
 
 @Component({
   selector: 'app-area-map',
@@ -11,14 +14,48 @@ export class AreaMapPage implements OnInit {
   points = [];
   area = 0;
   public areaScaled = 0;
-  public areaName = 'Neue Fläche';
+  public areaName = 'Mis nüä Biogärtli';
+  public isTakePicture = false;
+  public allowCameraSwitch = true;
+  public multipleWebcamsAvailable = false;
+  public deviceId: string;
+  public searchQuery = '';
+  public locations = [];
+  public videoOptions: MediaTrackConstraints = {
+    // width: {ideal: 1024},
+    // height: {ideal: 576}
+  };
+  public errors: WebcamInitError[] = [];
 
-  constructor() { }
+  // latest snapshot
+  public webcamImage: WebcamImage = null;
+
+  // webcam snapshot trigger
+  private trigger: Subject<void> = new Subject<void>();
+  // switch to next / previous / specific webcam; true/false: forward/backwards, string: deviceId
+  private nextWebcam: Subject<boolean|string> = new Subject<boolean|string>();
+
+  constructor(private geoApi: GeoApiService) { }
 
   ngOnInit() {
+    WebcamUtil.getAvailableVideoInputs()
+        .then((mediaDevices: MediaDeviceInfo[]) => {
+          this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
+        });
     this.points.push([]);
   }
 
+  public triggerSnapshot(): void {
+    this.trigger.next();
+  }
+  public get triggerObservable(): Observable<void> {
+    return this.trigger.asObservable();
+  }
+  public handleImage(webcamImage: WebcamImage): void {
+    console.info('received webcam image', webcamImage);
+    this.webcamImage = webcamImage;
+    this.isTakePicture = false;
+  }
   public clickInMap($event) {
     console.log($event);
     this.points[0].push($event.coordinate);
@@ -29,6 +66,36 @@ export class AreaMapPage implements OnInit {
     console.log('area', this.area);
   }
 
+  public findLocation($event) {
+    if ($event.detail.value.trim() === '' || $event.detail.value === this.searchQuery) {
+      return;
+    }
+    this.locations = [];
+    this.geoApi.findLocation($event.detail.value.trim()).subscribe(
+        (res) => {
+          res.forEach(loc => this.locations.push({result: loc, is_search_history: false}));
+        },
+        (err) => {
+          console.error(err);
+        },
+        () => {
+          ;
+        }
+    );
+    console.log('findLocation');
+  }
+  public jumpToLocation(location) {
+    this.searchQuery = location.attrs.label.replace('<i>','')
+         .replace('</i>','')
+         .replace('<b>','')
+         .replace('</b>','')
+         .replace('-', '');
+    console.log('jump to location', location);
+    this.locations = [];
+    //this.settingsService.addToSearchHistory(location.attrs.label, location);
+    this.mapElement.relocate([location.attrs.lon, location.attrs.lat]);
+  }
+
   public clearPoints($event) {
     this.points[0] = [];
     console.log(this.points);
@@ -37,6 +104,10 @@ export class AreaMapPage implements OnInit {
 
   public editArea($event) {
 
+  }
+
+  public takePicture($event) {
+    this.isTakePicture = !this.isTakePicture;
   }
 
   private polygonArea(coords): number // https://www.mathopenref.com/coordpolygonarea2.html
@@ -51,14 +122,7 @@ export class AreaMapPage implements OnInit {
     return Math.abs( area / 2.0 );
   }
   public zoom(direction) {
-  //  let zoomValue = this.mapObject.getView().getZoom();
-    const increment = 0.2;
-    if (direction === 'plus') {
-  //    zoomValue += increment;
-    } else {
-   //   zoomValue -= increment;
-    }
-  //  this.mapObject.getView().setZoom(zoomValue);
+    this.mapElement.zoom(direction);
   }
   public distance(zoomValue) {
 //    this.mapObject.getView().setResolution(zoomValue);
@@ -69,5 +133,26 @@ export class AreaMapPage implements OnInit {
     //this.mapObject.getView().setRotation(0);
     //this.mapObject.getView().setResolution(0.5);
     //this.mapObject.getView().setCenter([2723796.8597967187, 1211314.662645912]);
+  }
+  public handleInitError(error: WebcamInitError): void {
+    if (error.mediaStreamError && error.mediaStreamError.name === "NotAllowedError") {
+      console.warn("Camera access was not allowed by user!");
+    }
+  }
+  public showNextWebcam(directionOrDeviceId: boolean|string): void {
+    // true => move forward through devices
+    // false => move backwards through devices
+    // string => move to device with given deviceId
+    this.nextWebcam.next(directionOrDeviceId);
+  }
+  public toggleWebcam(): void {
+    this.isTakePicture = !this.isTakePicture;
+  }
+  public cameraWasSwitched(deviceId: string): void {
+    console.log('active device: ' + deviceId);
+    this.deviceId = deviceId;
+  }
+  public get nextWebcamObservable(): Observable<boolean|string> {
+    return this.nextWebcam.asObservable();
   }
 }
