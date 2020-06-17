@@ -5,12 +5,12 @@ import {Data} from '../../model/data';
   providedIn: 'root'
 })
 export class DataService {
-  private STORAGE_KEY = 'ch.capturetec.bio.data.v1';
+  private STORAGE_KEY = 'ch.capturetec.bio.data.v2';
   private data: Data = null;
   private areas: Data[] = [];
 
   constructor() {
-    window.localStorage.removeItem('ch.capturetec.bio.data.v0');
+    window.localStorage.removeItem('ch.capturetec.bio.data.v1');
     const dataAsString = window.localStorage.getItem(this.STORAGE_KEY);
     if (dataAsString) {
       try {
@@ -45,6 +45,8 @@ export class DataService {
     data.surname = '';
     data.lastname = '';
     data.is_historized = false;
+    data.anlegungen = [];
+    data.anlegungen_ = [];
     this.data = data;
     return data;
   }

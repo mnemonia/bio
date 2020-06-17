@@ -12,6 +12,14 @@ const routes: Routes = [
   },  {
     path: 'history-data',
     loadChildren: () => import('./history-data/history-data.module').then( m => m.HistoryDataPageModule)
+  },
+  {
+    path: 'anlegung-selektion',
+    loadChildren: () => import('./anlegung-selektion/anlegung-selektion.module').then( m => m.AnlegungSelektionPageModule)
+  },
+  {
+    path: 'photo-booth',
+    loadChildren: () => import('./photo-booth/photo-booth.module').then( m => m.PhotoBoothPageModule)
   }
 
 ];

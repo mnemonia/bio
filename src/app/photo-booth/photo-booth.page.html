@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Foto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row><ion-col>
+      <webcam [height]="webcamHeight" [width]="webcamWidth" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+              [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+              [videoOptions]="videoOptions"
+              [imageQuality]="1"
+              mirrorImage="never"
+              (cameraSwitched)="cameraWasSwitched($event)"
+              (initError)="handleInitError($event)">
+      </webcam>
+    </ion-col></ion-row>
+    <ion-row><ion-col>
+        <ion-list>
+          <ion-button expand="full" (click)="triggerSnapshot();"><ion-icon name="camera-outline"></ion-icon></ion-button>
+          <ion-button color="medium" expand="full" (click)="toggleWebcam();">Abbrechen</ion-button>
+        </ion-list>
+    </ion-col></ion-row>
+  </ion-grid>
+</ion-content>

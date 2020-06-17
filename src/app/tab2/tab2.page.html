@@ -9,7 +9,7 @@
 <ion-content [fullscreen]="true">
   <ion-list>
     <ion-item *ngFor="let d of data" detail="true" (click)="openPage(d)">
-      <ion-avatar>
+      <ion-avatar *ngIf="d.base64_jpeg_image">
         <img [src]="'data:image/png;base64,' + d.base64_jpeg_image">
       </ion-avatar>
       <ion-label>{{d.area_name}}<p>{{d.address_canonical}}</p></ion-label>

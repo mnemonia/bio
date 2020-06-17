@@ -7,6 +7,7 @@ import {BioApiService} from '../services/bioapi/bio-api.service';
 import {DataService} from '../services/data/data.service';
 import {Data} from '../model/data';
 import {NavController} from '@ionic/angular';
+import {SettingsService} from '../services/settings/settings.service';
 
 @Component({
   selector: 'app-area-map',
@@ -22,6 +23,7 @@ export class AreaMapPage implements OnInit {
   public multipleWebcamsAvailable = false;
   public deviceId: string;
   public locations = [];
+  public is_howto_checked = false;
 
   public currentData: Data;
   public isSendingData = false;
@@ -43,10 +45,12 @@ export class AreaMapPage implements OnInit {
   constructor(private geoApi: GeoApiService,
               private bioApiService: BioApiService,
               private dataService: DataService,
+              private settingsService: SettingsService,
               private navCtrl: NavController) { }
 
   ngOnInit() {
     this.currentData = this.dataService.getData();
+    this.is_howto_checked = this.settingsService.getSettings().is_howto_checked;
     WebcamUtil.getAvailableVideoInputs()
         .then((mediaDevices: MediaDeviceInfo[]) => {
           this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
@@ -80,6 +84,7 @@ export class AreaMapPage implements OnInit {
 
   public findLocation($event) {
     if ($event.detail.value.trim() === '' || $event.detail.value === this.currentData.address_canonical) {
+      this.locations = [];
       return;
     }
     this.locations = [];
@@ -133,6 +138,7 @@ export class AreaMapPage implements OnInit {
         },
         () => {
           this.currentData = this.dataService.newData();
+          this.points[0] = [];
           this.mapElement.addAreas(this.currentData.area_polyline);
           this.isSendingData = false;
           this.navCtrl.navigateForward('/tabs/my-areas');
@@ -184,5 +190,10 @@ export class AreaMapPage implements OnInit {
   }
   public get nextWebcamObservable(): Observable<boolean|string> {
     return this.nextWebcam.asObservable();
+  }
+
+  public saveState($event) {
+    this.settingsService.getSettings().is_howto_checked = this.is_howto_checked;
+    this.settingsService.save();
   }
 }

@@ -15,6 +15,7 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {DataService} from './services/data/data.service';
 import {BioApiService} from './services/bioapi/bio-api.service';
 import {SettingsService} from './services/settings/settings.service';
+import {AnlegungService} from './services/anlegung/anlegung.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +29,7 @@ import {SettingsService} from './services/settings/settings.service';
       DataService,
       BioApiService,
       SettingsService,
+      AnlegungService,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: LocationStrategy, useClass: HashLocationStrategy}
 

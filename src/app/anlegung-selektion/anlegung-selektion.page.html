@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Anlegungen</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-grid>
+    <ion-row *ngFor="let anlegung of anleg">
+        <ion-col>
+            <ion-card  color="{{anlegung.da.is_selected ? 'success': ''}}">
+                <ion-card-header>
+                    <ion-slides pager="true">
+                        <ion-slide *ngFor="let img of anlegung.a.image_names">
+                            <img src="/assets/anlegungen/{{img}}">
+                        </ion-slide>
+                    </ion-slides>
+                    <h2>{{anlegung.a.label}}</h2>
+                </ion-card-header>
+                <ion-card-content>
+                    <p class="ion-text-wrap" [innerHTML]="anlegung.a.description"></p>
+                    <p>{{anlegung.a.product_options > 1 ? 'Empfehlungen' : 'Empfehlung'}}:</p>
+                    <ul>
+                    <li *ngFor="let opt of anlegung.a.product_options">{{opt}}</li>
+                    </ul>
+                        <ion-item color="{{anlegung.a.is_selected ? 'success': ''}}">
+                            <ion-checkbox slot="end"
+                                          color="medium"
+                                          (click)="toggleAnlegung(anlegung)"
+                                          [(ngModel)]="anlegung.da.is_selected">
+                            </ion-checkbox>
+                        </ion-item>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+    </ion-row>
+</ion-grid>
+</ion-content>

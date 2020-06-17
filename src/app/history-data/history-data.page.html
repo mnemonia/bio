@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/my-areas"></ion-back-button>
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
     <ion-title>{{data.area_name}}</ion-title>
   </ion-toolbar>
@@ -16,15 +16,31 @@
       <ion-label>Fläche</ion-label>
       <ion-text>{{data.area_in_m2}} m²</ion-text>
     </ion-item>
-    <ion-item>
-      <ion-label>Anlegungen</ion-label>
-      <ul>
-        <li *ngFor="let anlegung of data.anlegungen">{{anlegung}}</li>
-      </ul>
+  </ion-list>
+  <ion-list lines="none">
+    <ion-list-header>Anlegungen</ion-list-header>
+     <ion-item *ngFor="let a of data.anlegungen_">
+      <ion-avatar>
+        <img src="/assets/anlegungen/{{a.image_names[0]}}">
+      </ion-avatar>
+      <ion-label>&nbsp;{{a.label}}</ion-label>
     </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-list-header>Fotos</ion-list-header>
     <ion-item>
-      <ion-label>Bilder</ion-label>
+      <ion-slides>
+        <ion-slide>
+          <ion-row>
+            <ion-col><img [src]="'data:image/png;base64,' + data.base64_jpeg_image"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><ion-button color="danger" size="small"><ion-icon name="remove-circle-outline"></ion-icon></ion-button></ion-col>
+          </ion-row>
+        </ion-slide>
+      </ion-slides>
     </ion-item>
+    <ion-button disabled="true" color="secondary" expand="full"><ion-icon name="camera-outline"></ion-icon> Neues Foto</ion-button>
   </ion-list>
 <ion-list>
   <ion-button disabled="true" expand="full" (click)="deleteData()">Löschen</ion-button>
