@@ -24,6 +24,10 @@
   .area-anlegung-input {
     background-color: var(--ion-color-userinput);
   }
+  .search_container {
+    position: relative;
+    padding-bottom: 0.1em;
+  }
   .map-control-button {
 
   }
@@ -34,9 +38,9 @@
   }
   .flowing_howto_container {
     position:absolute;
-    top: 1vh;
+    top: 10vh;
     z-index: 13;
-    left: 15vw;
+    left: 25vw;
   }
   .photobooth {
     height: 10vh;

@@ -1,7 +1,36 @@
 <ion-header [translucent]="true">
+  <ion-toolbar>
+
+    <ion-searchbar clear-input="true" slot="end"
+                   placeholder="Adresse eingeben oder Karte benutzen"
+                   (ionCancel)="removeLocations($event)"
+                   (ionChange)="findLocation($event)"
+                   debounce="500"
+                   [(ngModel)]="address_canonical"></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <div *ngIf="locations.length > 0" class="search_container">
+    <div class="search_results">
+      <ion-list class="transparent_layer">
+        <ion-item
+                class="search_result"
+                color="light"
+                slot="end"
+                expand="block"
+                *ngFor="let loc of locations"
+                (click)="jumpToLocation(loc.result)">
+          <ion-icon *ngIf="loc.is_search_history" name="time-outline"></ion-icon>&nbsp;
+          <div
+                  [innerHTML]="loc.result.attrs.label"
+                  class="search_result_item"
+          ></div
+          ></ion-item>
+      </ion-list>
+    </div>
+  </div>
+
   <div class="flowing_howto_container" *ngIf="!is_howto_checked">
     <ion-card>
       <ion-card-header><h3>Wie gehts? So gehts:</h3><img src="/assets/howto/draw-area.gif"></ion-card-header>
@@ -94,7 +123,7 @@
             <ion-row>
               <ion-col class="ion-no-margin ion-no-padding">
                 <div #clearPoints01 name="clearPoints01" id="clearPoints01">
-                  <ion-button size="small" color="danger" title="Locate me" class="map-control-button" (click)="clearPoints($event)"><ion-icon name="close-circle-outline"></ion-icon></ion-button>
+                  <ion-button size="small" color="danger" title="Fläche entfernen me" class="map-control-button" (click)="clearPoints($event)"><ion-icon name="close-circle-outline"></ion-icon></ion-button>
                 </div>
               </ion-col>
             </ion-row>
@@ -106,43 +135,30 @@
                 </div>
               </ion-col>
             </ion-row>
+            <!-- ion-row>
+              <ion-col class="ion-no-margin ion-no-padding">
+                <div #addNewArea name="addNewArea" id="addNewArea">
+                  <ion-button size="small" title="Neue Fläche" class="map-control-button">
+                    <ion-icon name="triangle-outline"></ion-icon>
+                  </ion-button>
+                </div>
+              </ion-col>
+            </ion-row -->
           </ion-grid>
         </ion-col>
       </ion-row>
     </ion-grid>
-  <app-swiss-map #swissymappy (onMapEvent)="clickInMap($event)"></app-swiss-map>
+
+  <app-swiss-map #swissymappy [mapCenter]="initialCenterCoordinate" (onMapEvent)="clickInMap($event)"></app-swiss-map>
+
 
   <ion-list>
     <ion-item>
-      <ion-label>Fläche</ion-label><ion-text slot="end">{{currentData.area_in_m2}} m²</ion-text>
+      <ion-label>Fläche<p *ngIf="currentData.grundbuch_nummer">Grundstücksnummer: {{currentData.grundbuch_nummer}}</p></ion-label><ion-text slot="end">{{currentData.area_in_m2}} m²</ion-text>
     </ion-item>
     <ion-item>
-      <ion-label>Adresse</ion-label>
-      <ion-input clear-input="true" slot="end" class="area-name-input"
-                 placeholder="Adresse eingeben oder Karte benutzen"
-                 (ionChange)="findLocation($event)"
-                 debounce="750"
-                 [value]="currentData.address_canonical"></ion-input>
+      <ion-label>Gemeinde/Kanton</ion-label><ion-text slot="end">{{currentData.gdename}}/{{currentData.gdekt}}</ion-text>
     </ion-item>
-    <div *ngIf="locations.length > 0" class="search_container">
-      <div class="search_results">
-        <ion-list class="transparent_layer">
-          <ion-item
-                  class="search_result"
-                  color="light"
-                  slot="end"
-                  expand="block"
-                  *ngFor="let loc of locations"
-                  (click)="jumpToLocation(loc.result)">
-            <ion-icon *ngIf="loc.is_search_history" name="time-outline"></ion-icon>&nbsp;
-            <div
-                    [innerHTML]="loc.result.attrs.label"
-                    class="search_result_item"
-            ></div
-            ></ion-item>
-        </ion-list>
-      </div>
-    </div>
     <ion-item>
       <ion-label>Name der Fläche</ion-label>
       <ion-input clear-input="true" slot="end" class="area-name-input" name="areaName" id="areaName" [(ngModel)]="currentData.area_name"></ion-input>
@@ -177,11 +193,11 @@
   <ion-list>
     <ion-item>
       <ion-label>Vorname</ion-label>
-      <ion-input clear-input="true" slot="end" class="area-name-input" type="text" name="surname" id="surname" [(ngModel)]="currentData.surname"></ion-input>
+      <ion-input clear-input="true" slot="end" class="area-name-input" type="text" name="surname" id="surname" [(ngModel)]="currentData.surname" (ionChange)="setIsEigentuemerFound($event)"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Nachname</ion-label>
-      <ion-input clear-input="true" slot="end" class="area-name-input" type="text" name="lastname" id="lastname" [(ngModel)]="currentData.lastname"></ion-input>
+      <ion-input clear-input="true" slot="end" class="area-name-input" type="text" name="lastname" id="lastname" [(ngModel)]="currentData.lastname" (ionChange)="setIsEigentuemerFound($event)"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Email<p>Rückmeldung Wettbewerb</p></ion-label>

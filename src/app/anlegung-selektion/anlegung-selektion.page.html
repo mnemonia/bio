@@ -23,9 +23,9 @@
                 <ion-card-content>
                     <p class="ion-text-wrap" [innerHTML]="anlegung.a.description"></p>
                     <p>{{anlegung.a.product_options > 1 ? 'Empfehlungen' : 'Empfehlung'}}:</p>
-                    <ul>
+                    <!-- ul>
                     <li *ngFor="let opt of anlegung.a.product_options">{{opt}}</li>
-                    </ul>
+                    </ul -->
                         <ion-item color="{{anlegung.a.is_selected ? 'success': ''}}">
                             <ion-checkbox slot="end"
                                           color="medium"

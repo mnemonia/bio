@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 
 declare var ga;
 declare var ol;
@@ -20,6 +20,15 @@ export class SwissMapComponent implements OnInit {
   private _mapData;
   private _mapResolution = 0.1;
   private _mapCenter = [2723692.8416339746, 1211615.5110511137];
+  @Input()
+  set mapCenter(mc: number[]) {
+    this._mapCenter = mc;
+    if (this.mapObject === undefined) {
+      return;
+    }
+    this.mapObject.getView().setCenter(this._mapCenter);
+  }
+  get mapCenter() {return this._mapCenter;}
 
   constructor() { }
 

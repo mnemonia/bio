@@ -15,6 +15,9 @@ export class Data {
     surname: string;
     lastname: string;
     address_canonical: string;
+    is_address_found: boolean;
+    is_eigentuemer_found: boolean;
+    is_eigentuemer_edited: boolean;
     email: string;
     area_name: string;
     area_polyline: Coordinate[];
@@ -23,4 +26,14 @@ export class Data {
     area_in_m2: number;
     base64_jpeg_image: string;
     is_historized: boolean;
+    gdename: string;
+    gdekt: string;
+    gdenr: number;
+    center_coordinate: number[];
+    last_map_center: number[];
+    egrid: string;
+    grundbuch_nummer: number;
+    strname1: string;
+    plzname: string;
+    plz4: string;
 }
